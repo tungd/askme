@@ -7,8 +7,14 @@
   <h2>{{ object.get_full_name }}</h2>
 </div>
 
+<form action="" method="POST">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button>Ask</button>
+</form>
+
 <ul>
-  {% for question in object.questions.all %}
+  {% for question in questions %}
   <li>
     <dd>
       <dl>{{ question.text }}</dl>
