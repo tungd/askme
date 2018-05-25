@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <title>Ask Me</title>
+  </head>
+  <body>
+    <header>
+
+      {% if not request.user.is_authenticated %}
+      <form action="">
+        {% csrf_token %}
+        {{ form }}
+        <button>Login</button>
+      </form>
+      {% endif %}
+    </header>
+
+    {% block content %}
+    {% endblock %}
+
+    <footer>
+
+    </footer>
+  </body>
+</html>

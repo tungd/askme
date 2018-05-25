@@ -1,12 +1,11 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8"/>
-    <title>Document</title>
-  </head>
-  <body>
-    {% for question in object_list %}
-    {{ question }}
-    {% endfor %}
-  </body>
-</html>
+{% extends "layout.html" %}
+
+{% block content %}
+{% if request.user.is_authenticated %}
+<ul>
+  {% for question in object_list %}
+  <li>{{ question }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

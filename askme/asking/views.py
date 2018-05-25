@@ -1,8 +1,11 @@
+from django.contrib.auth.views import LoginView
 from django.views.generic import ListView
 
 from . import models
 
 
-class IndexView(ListView):
+class IndexView(LoginView, ListView):
     template_name = 'index.html'
-    queryset = models.Question.objects.all()
+
+    def get_queryset(self):
+        return self.request.user.questions.filter(answer='').all()

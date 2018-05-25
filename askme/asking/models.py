@@ -10,7 +10,9 @@ class Question(BaseModel):
     name = models.CharField(_('Name of asker'), max_length=255)
     text = models.TextField(_('Question'))
 
-    answerer = models.ForeignKey(User, on_delete=models.CASCADE)
+    answerer = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='questions'
+    )
     answer = models.TextField(blank=True, null=True)
 
     def __str__(self):
