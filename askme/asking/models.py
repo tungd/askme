@@ -11,7 +11,7 @@ class Question(BaseModel):
     text = models.TextField(_('Question'))
 
     answerer = models.ForeignKey(User, on_delete=models.CASCADE)
-    answer = models.TextField()
+    answer = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.text
