@@ -2,10 +2,25 @@
 
 {% block content %}
 {% if request.user.is_authenticated %}
-<ul>
-  {% for question in object_list %}
-  <li>{{ question }}</li>
-  {% endfor %}
-</ul>
+{% for question in object_list %}
+{{ question }}
+{% if not question.answer %}
+<a href="{% url 'answer' question.pk %}">Answer</a>
+{% endif %}
+
+<div class="active-banner-slider">
+  <div class="item d-flex align-items-center">
+    <div class="container">
+      <div class="content">
+        <h1 class="text-white text-uppercase">{{ question }}</h1>
+        {% if not question.answer %}
+        <p class="text-white">{{ question.answer }}</p>
+        {% endif %}
+        <a href="#" class="primary-btn d-inline-flex align-items-center"><span class="mr-10">Get Started</span><span class="lnr lnr-arrow-right"></span></a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
 {% endif %}
 {% endblock %}
