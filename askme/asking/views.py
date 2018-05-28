@@ -1,16 +1,40 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.views import LoginView
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, FormView, ListView
+from django.views.generic.edit import CreateView, UpdateView
 
-from . import forms
+from . import forms, models
 
 
 class IndexView(LoginView, ListView):
     template_name = 'index.html'
 
     def get_queryset(self):
-        return self.request.user.questions.filter(answer='').all()
+        user = self.request.user
+        if user.is_authenticated:
+            return user.questions.all()
+
+
+class UpdateQuestionView(UpdateView):
+    model = models.Question
+    fields = ['answer']
+    success_url = reverse_lazy('index')
+
+
+class CreateQuestionView(CreateView):
+    model = models.Question
+    fields = ['name', 'text']
+
+    def get_success_url(self):
+        return reverse('profile', args=[
+            self.object.answerer.username
+        ])
+
+    def form_valid(self, form):
+        form.instance.answerer_id = self.request.POST.get('answerer_id')
+        form.save()
+        return super().form_valid(form)
 
 
 class ProfileView(DetailView, FormView):
@@ -21,15 +45,5 @@ class ProfileView(DetailView, FormView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['questions'] = self.get_object().questions.exclude(answer=None)
+        context['questions'] = self.get_object().questions.exclude(answer='')
         return context
-
-    def get_success_url(self):
-        return reverse('profile', args=[self.kwargs['slug']])
-
-    def form_valid(self, form):
-        username = self.kwargs['slug']
-        answerer = self.model.objects.get(username=username)
-        form.instance.answerer = answerer
-        form.save()
-        return super().form_valid(form)
